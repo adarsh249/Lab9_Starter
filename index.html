@@ -86,8 +86,21 @@
       <button>Trigger a Global Error</button>
     </section>
   </main>
-
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "40200b4495324b39974726d69274b5a0"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+                          
+  <script>
+    class EmptyInput extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "EmptyInput";
+      }
+    }
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,13 +108,79 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      if(firstNum === "" || secondNum === "")
+        throw new EmptyInput("One of your inputs is empty");
+      try {
+        let result = divideByZero(firstNum, secondNum, operator);
+       
+        output.innerHTML = result;
+      }
+      catch (error) {
+        output.innerHTML = error.message;
+      }
+      finally {
+        console.log("Calculation Over");
+      }
     });
-
+    function divideByZero(firstNum, secondNum, operator) {
+      if(operator === '/' && secondNum === '0'){
+        throw new Error("No Divison by 0!");
+      }
+      else
+        return eval(`${firstNum} ${operator} ${secondNum}`);
+    };
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
-
+    
     // Start your code here
     // You may move this JS to another file if you wish
+    errorBtns[0].addEventListener('click', () => {
+      console.log("This is a console.log() statement, or print staement");
+    });
+    errorBtns[1].addEventListener('click', () => {
+      console.error("This is an error statement.");
+    });
+    errorBtns[2].addEventListener('click', () => {
+      console.log("This button has been clicked this many times using console.count(): ");
+      console.count();
+    });
+    errorBtns[3].addEventListener('click', () => {
+      console.warn("Warning statement");
+    });
+    errorBtns[4].addEventListener('click', () => {
+      console.assert(3 % 2 === 0, "%o", "3 is not even");
+    });
+    errorBtns[5].addEventListener('click', () => {
+      console.clear();
+    });
+    errorBtns[6].addEventListener('click', () => {
+      console.dir(document.location);
+    });
+    errorBtns[7].addEventListener('click', () => {
+      console.dirxml(document.body);
+    });
+    errorBtns[8].addEventListener('click', () => {
+      console.log("a level");
+      console.group();
+    });
+    errorBtns[9].addEventListener('click', () => {
+      console.groupEnd();
+    });
+    errorBtns[10].addEventListener('click', () => {
+      console.table(["apples", "oranges", "bananas"]);
+    });
+    errorBtns[11].addEventListener('click', () => {
+      console.time("timer");
+    });
+    errorBtns[12].addEventListener('click', () => {
+      console.timeEnd("timer");
+    });
+    errorBtns[13].addEventListener('click', () => {
+      console.trace();
+    });
+    errorBtns[14].addEventListener('click', () => {
+      throw new Error("This is a global error...");
+    });
+    TrackJS.track('Testing TrackJS');
   </script>
 </body>
 
